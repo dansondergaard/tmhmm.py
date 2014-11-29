@@ -3,6 +3,7 @@ import re
 
 import numpy as np
 
+from viterbi import viterbi
 
 def _tokenize(contents):
     return re.findall(r'([A-Za-z0-9\.\-_]+|[:;\{\}])', contents)
@@ -173,53 +174,6 @@ def parse_model(file_like):
                                    _normalize_states(states))
 
 
-def optimal_path(sequence, model):
-    """
-    Compute the most probable path through the model given the sequence.
-
-    This function implements Viterbi's algorithm in log-space.
-
-    :param sequence str: a string over the alphabet specified by the model.
-    :param model: a model as returned by :func:`parse_model`.
-    :rtype: tuple(matrix, optimal_path)
-    :return: a tuple consisting of the dynamic programming table and the
-             optimal path.
-    """
-    header, (initial, transitions, emissions, char_map, label_map, _) = model
-
-    # work in log space
-    initial = np.log(initial)
-    transitions = np.log(transitions)
-    emissions = np.log(emissions)
-
-    no_observations = len(sequence)
-    no_states = len(initial)
-
-    M = np.zeros(shape=(no_observations, no_states))
-    P = np.zeros(shape=(no_observations, no_states))
-
-    for i in range(no_states):
-        M[0, i] = initial[i] + emissions[i, char_map[sequence[0]]]
-
-    for i in range(1, no_observations):
-        for j in range(no_states):
-            max_state, max_state_prob = 0, -np.inf
-            for k in range(no_states):
-                prob = M[i - 1, k] + transitions[k, j]
-                if prob > max_state_prob:
-                    max_state, max_state_prob = k, prob
-            M[i, j] = max_state_prob + emissions[j, char_map[sequence[i]]]
-            P[i, j] = max_state
-
-    backtracked = []
-    next_state = np.argmax(M[-1,], axis=0)
-    for i in range(no_observations - 1, -1, -1):
-        backtracked.append(label_map[next_state])
-        next_state = P[i, next_state]
-
-    return M, ''.join(reversed(backtracked))
-
-
 def summarize(path):
     """
     Summarize a path as a list of (start, end, state) triples.
@@ -245,9 +199,9 @@ if __name__ == '__main__':
     }
 
     with open(sys.argv[1]) as model_file, open(sys.argv[2]) as sequence_file:
-        model = parse_model(model_file)
+        header, model = parse_model(model_file)
         for record in skbio.io.read(sequence_file, format='fasta'):
-            matrix, path = optimal_path(record.sequence, model)
+            matrix, path = viterbi(record.sequence, *model)
             for start, end, state in summarize(path):
                 print("{}-{}: {}".format(start, end, pretty_names[state]))
             print()
