@@ -13,7 +13,7 @@ I did this for a few reasons:
 - the need to predict transmembrane helices on a large dataset.
 
 This Python implementation includes a parser for the undocumented file format
-used to describe the model and a pure Python (slow) implementation of the Viterbi algorithm used to perform the annotation. The output looks like this:
+used to describe the model and a pretty fast Cython implementation of the Viterbi algorithm used to perform the annotation. The output looks like this:
 
     $ python3 tmhmm.py TMHMM2.0.model test.fa
     0-444: outside
@@ -43,4 +43,3 @@ used to describe the model and a pure Python (slow) implementation of the Viterb
 
 * scikit-bio
 * numpy
-
