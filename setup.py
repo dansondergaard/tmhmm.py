@@ -7,7 +7,7 @@ import numpy
 USE_CYTHON = True
 try:
     from Cython.Build import cythonize
-except Exception, e:
+except Exception:
     USE_CYTHON = False
 
 ext = '.pyx' if USE_CYTHON else '.c'
