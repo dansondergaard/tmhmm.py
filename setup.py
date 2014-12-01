@@ -15,7 +15,6 @@ ext = '.pyx' if USE_CYTHON else '.c'
 extensions = [Extension("viterbi", ["viterbi" + ext])]
 
 if USE_CYTHON:
-    from Cython.Build import cythonize
     extensions = cythonize(extensions)
 
 setup(
