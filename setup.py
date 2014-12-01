@@ -1,18 +1,20 @@
 from setuptools import setup
 from distutils.extension import Extension
 
-from Cython.Build import cythonize
-
 import numpy
 
-USE_CYTHON = ...   # command line option, try-import, ...
+
+USE_CYTHON = True
+try:
+    from Cython.Build import cythonize
+except Exception, e:
+    USE_CYTHON = False
 
 ext = '.pyx' if USE_CYTHON else '.c'
 
 extensions = [Extension("viterbi", ["viterbi" + ext])]
 
 if USE_CYTHON:
-    from Cython.Build import cythonize
     extensions = cythonize(extensions)
 
 setup(
