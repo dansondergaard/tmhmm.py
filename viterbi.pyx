@@ -18,7 +18,6 @@ def viterbi(sequence,
     This function implements Viterbi's algorithm in log-space.
 
     :param sequence str: a string over the alphabet specified by the model.
-    :param model: a model as returned by :func:`parse_model`.
     :rtype: tuple(matrix, optimal_path)
     :return: a tuple consisting of the dynamic programming table and the
              optimal path.
@@ -34,8 +33,10 @@ def viterbi(sequence,
     transitions = np.log(transitions)
     emissions = np.log(emissions)
 
-    cdef np.ndarray[DTYPE_t, ndim=2] M = np.zeros([no_observations, no_states], dtype=DTYPE)
-    cdef np.ndarray[np.int_t, ndim=2] P = np.zeros([no_observations, no_states], dtype=np.int)
+    cdef np.ndarray[DTYPE_t, ndim=2] M = \
+        np.zeros([2, no_states],dtype=DTYPE)
+    cdef np.ndarray[np.int_t, ndim=2] P = \
+        np.zeros([no_observations, no_states], dtype=np.int)
 
     cdef unsigned int i, j, k, max_state, next_state, observation
     cdef double max_state_prob, prob
@@ -50,10 +51,10 @@ def viterbi(sequence,
             max_state = 0
             max_state_prob = neginf
             for k in range(no_states):
-                prob = M[i - 1, k] + transitions[k, j]
+                prob = M[(i - 1) % 2, k] + transitions[k, j]
                 if prob > max_state_prob:
                     max_state, max_state_prob = k, prob
-            M[i, j] = max_state_prob + emissions[j, observation]
+            M[i % 2, j] = max_state_prob + emissions[j, observation]
             P[i, j] = max_state
 
     # TODO: figure out why stuff doesn't work when using cython without turning
@@ -61,7 +62,7 @@ def viterbi(sequence,
     # TODO: stuff crashes if one uses reversed(range(no_observations)), why?
 
     backtracked = []
-    next_state = np.argmax(M[-1,], axis=0)
+    next_state = np.argmax(M[no_observations % 2,], axis=0)
     for i in list(range(no_observations - 1, -1, -1)):
         backtracked.append(label_map[next_state])
         next_state = P[i, next_state]
