@@ -16,7 +16,16 @@ I did this for a few reasons:
   out the web service.
 
 This Python implementation includes a parser for the undocumented file format
-used to describe the model and a pretty fast Cython implementation of the Viterbi algorithm used to perform the annotation. The output looks like this:
+used to describe the model and a pretty fast Cython implementation of the Viterbi algorithm used to perform the annotation.
+
+# Installation
+
+The package is not available at PyPI yet, but installation is pretty trivial:
+
+    git clone https://github.com/dansondergaard/tmhmm.py.git
+    python setup.py install
+
+# Usage
 
     $ tmhmm -h
     usage: tmhmm.py [-h] -f SEQUENCE_FILE [-m MODEL_FILE]
