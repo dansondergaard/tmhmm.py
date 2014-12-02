@@ -6,6 +6,7 @@ cimport cython
 DTYPE = np.double
 ctypedef np.double_t DTYPE_t
 
+
 @cython.boundscheck(False)
 def viterbi(sequence,
             np.ndarray[DTYPE_t, ndim=1] initial,

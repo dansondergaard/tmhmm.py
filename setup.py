@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from distutils.extension import Extension
 
 import numpy
@@ -12,7 +12,7 @@ except Exception:
 
 ext = '.pyx' if USE_CYTHON else '.c'
 
-extensions = [Extension("viterbi", ["viterbi" + ext])]
+extensions = [Extension("tmhmm.viterbi", ["tmhmm/viterbi" + ext])]
 
 if USE_CYTHON:
     extensions = cythonize(extensions)
@@ -25,7 +25,8 @@ setup(
     description='A transmembrane helix finder.',
     url='https://github.com/dansondergaard/tmhmm.py/',
     install_requires=['scikit-bio>=0.2', 'numpy>=1.9'],
-    py_modules=['tmhmm'],
+    packages=find_packages(),
+    scripts=['scripts/tmhmm'],
     ext_modules=extensions,
     include_dirs=[numpy.get_include()],
 )

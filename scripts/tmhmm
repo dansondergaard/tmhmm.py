@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+import argparse
+import itertools
+
+import skbio.io
+
+from tmhmm.model import parse
+from tmhmm.viterbi import viterbi
+
+
+PRETTY_NAMES = {
+    'i': 'inside',
+    'M': 'transmembrane helix',
+    'o': 'outside',
+    'O': 'outside'
+}
+
+def summarize(path):
+    """
+    Summarize a path as a list of (start, end, state) triples.
+    """
+    for state, group in itertools.groupby(enumerate(path), key=lambda x: x[1]):
+        group = list(group)
+        start = min(group, key=lambda x: x[0])[0]
+        end = max(group, key=lambda x: x[0])[0]
+        yield start, end, state
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-f', '--file', dest='sequence_file',
+                    type=argparse.FileType('r'), required=True,
+                    help='path to file in fasta format with sequences')
+parser.add_argument('-m', '--model', dest='model_file',
+                    type=argparse.FileType('r'), default='TMHMM2.0.model',
+                    help='path to the model to use')
+
+args = parser.parse_args()
+
+header, model = parse(args.model_file)
+for record in skbio.io.read(args.sequence_file, format='fasta'):
+    matrix, path = viterbi(record.sequence, *model)
+    for start, end, state in summarize(path):
+        print("{} {} {}".format(start, end, PRETTY_NAMES[state]))
+    print()
+    print('>', record.id, ' ', record.description, sep='')
+    print(path)

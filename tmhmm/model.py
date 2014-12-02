@@ -1,10 +1,7 @@
 import collections
-import itertools
 import re
 
 import numpy as np
-
-from viterbi import viterbi
 
 
 def _tokenize(contents):
@@ -154,7 +151,7 @@ def _to_matrix_form(alphabet, states):
     return initial, transitions, emissions, char_map, label_map, name_map
 
 
-def parse_model(file_like):
+def parse(file_like):
     """
     Parse a model in the TMHMM 2.0 format.
 
@@ -175,47 +172,3 @@ def parse_model(file_like):
     return header, _to_matrix_form(header['alphabet'],
                                    _normalize_states(states))
 
-
-def summarize(path):
-    """
-    Summarize a path as a list of (start, end, state) triples.
-    """
-    for state, group in itertools.groupby(enumerate(path), key=lambda x: x[1]):
-        group = list(group)
-        start = min(group, key=lambda x: x[0])[0]
-        end = max(group, key=lambda x: x[0])[0]
-        yield start, end, state
-
-
-if __name__ == '__main__':
-    import argparse
-
-    import skbio.io
-
-
-    PRETTY_NAMES = {
-        'i': 'inside',
-        'M': 'transmembrane helix',
-        'o': 'outside',
-        'O': 'outside'
-    }
-
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-f', '--file', dest='sequence_file',
-                        type=argparse.FileType('r'), required=True,
-                        help='path to file in fasta format with sequences')
-    parser.add_argument('-m', '--model', dest='model_file',
-                        type=argparse.FileType('r'), default='TMHMM2.0.model',
-                        help='path to the model to use')
-
-    args = parser.parse_args()
-
-    header, model = parse_model(args.model_file)
-    for record in skbio.io.read(args.sequence_file, format='fasta'):
-        for _ in range(10):
-            matrix, path = viterbi(record.sequence, *model)
-        for start, end, state in summarize(path):
-            print("{} {} {}".format(start, end, PRETTY_NAMES[state]))
-        print()
-        print('>', record.id, ' ', record.description, sep='')
-        print(path)

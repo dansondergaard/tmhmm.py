@@ -18,7 +18,7 @@ I did this for a few reasons:
 This Python implementation includes a parser for the undocumented file format
 used to describe the model and a pretty fast Cython implementation of the Viterbi algorithm used to perform the annotation. The output looks like this:
 
-    $ python3 tmhmm.py -h
+    $ tmhmm -h
     usage: tmhmm.py [-h] -f SEQUENCE_FILE [-m MODEL_FILE]
 
     optional arguments:
@@ -28,7 +28,7 @@ used to describe the model and a pretty fast Cython implementation of the Viterb
       -m MODEL_FILE, --model MODEL_FILE
                             path to the model to use
 
-    $ python3 tmhmm.py -m TMHMM2.0.model -f test.fa
+    $ tmhmm -m TMHMM2.0.model -f test.fa
     0-444: outside
     445-467: transmembrane helix
     468-820: inside
