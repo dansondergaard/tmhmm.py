@@ -29,4 +29,5 @@ setup(
     scripts=['scripts/tmhmm'],
     ext_modules=extensions,
     include_dirs=[numpy.get_include()],
+    data_files=[('', ['TMHMM2.0.model'])]
 )

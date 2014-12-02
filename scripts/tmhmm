@@ -2,8 +2,13 @@
 
 import argparse
 import itertools
+import os
+import os.path
+import sys
 
 import skbio.io
+
+import tmhmm
 
 from tmhmm.model import parse
 from tmhmm.viterbi import viterbi
@@ -16,6 +21,10 @@ PRETTY_NAMES = {
     'O': 'outside'
 }
 
+APP_DIR = os.path.dirname(tmhmm.__path__[0])
+DEFAULT_MODEL = os.path.join(APP_DIR, 'TMHMM2.0.model')
+
+
 def summarize(path):
     """
     Summarize a path as a list of (start, end, state) triples.
@@ -27,12 +36,13 @@ def summarize(path):
         yield start, end, state
 
 
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', dest='sequence_file',
                     type=argparse.FileType('r'), required=True,
                     help='path to file in fasta format with sequences')
 parser.add_argument('-m', '--model', dest='model_file',
-                    type=argparse.FileType('r'), default='TMHMM2.0.model',
+                    type=argparse.FileType('r'), default=DEFAULT_MODEL,
                     help='path to the model to use')
 
 args = parser.parse_args()
