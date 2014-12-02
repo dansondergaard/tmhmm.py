@@ -1,9 +1,11 @@
 import collections
+import itertools
 import re
 
 import numpy as np
 
 from viterbi import viterbi
+
 
 def _tokenize(contents):
     return re.findall(r'([A-Za-z0-9\.\-_]+|[:;\{\}])', contents)
@@ -186,24 +188,34 @@ def summarize(path):
 
 
 if __name__ == '__main__':
-    import sys
-    import itertools
+    import argparse
 
     import skbio.io
 
-    pretty_names = {
+
+    PRETTY_NAMES = {
         'i': 'inside',
         'M': 'transmembrane helix',
         'o': 'outside',
         'O': 'outside'
     }
 
-    with open(sys.argv[1]) as model_file, open(sys.argv[2]) as sequence_file:
-        header, model = parse_model(model_file)
-        for record in skbio.io.read(sequence_file, format='fasta'):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-f', '--file', dest='sequence_file',
+                        type=argparse.FileType('r'), required=True,
+                        help='path to file in fasta format with sequences')
+    parser.add_argument('-m', '--model', dest='model_file',
+                        type=argparse.FileType('r'), default='TMHMM2.0.model',
+                        help='path to the model to use')
+
+    args = parser.parse_args()
+
+    header, model = parse_model(args.model_file)
+    for record in skbio.io.read(args.sequence_file, format='fasta'):
+        for _ in range(10):
             matrix, path = viterbi(record.sequence, *model)
-            for start, end, state in summarize(path):
-                print("{}-{}: {}".format(start, end, pretty_names[state]))
-            print()
-            print('>', record.id, ' ', record.description, sep='')
-            print(path)
+        for start, end, state in summarize(path):
+            print("{} {} {}".format(start, end, PRETTY_NAMES[state]))
+        print()
+        print('>', record.id, ' ', record.description, sep='')
+        print(path)
