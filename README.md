@@ -10,7 +10,10 @@ I did this for a few reasons:
 
 - the source code is not available as part of the publication,
 - the downloadable binaries are Linux-only,
-- the need to predict transmembrane helices on a large dataset.
+- the downloadable binaries may not be redistributed, so it's not possible to
+  put them in a Docker image or a VM for other people to use,
+- the need to predict transmembrane helices on a large dataset, which rules
+  out the web service.
 
 This Python implementation includes a parser for the undocumented file format
 used to describe the model and a pretty fast Cython implementation of the Viterbi algorithm used to perform the annotation. The output looks like this:
