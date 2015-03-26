@@ -12,7 +12,7 @@ except Exception:
 
 ext = '.pyx' if USE_CYTHON else '.c'
 
-extensions = [Extension("tmhmm.viterbi", ["tmhmm/viterbi" + ext])]
+extensions = [Extension("tmhmm.hmm", ["tmhmm/hmm" + ext])]
 
 if USE_CYTHON:
     extensions = cythonize(extensions)

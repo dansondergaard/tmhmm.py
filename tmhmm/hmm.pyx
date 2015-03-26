@@ -69,3 +69,4 @@ def viterbi(sequence,
         next_state = P[i, next_state]
 
     return M, ''.join(reversed(backtracked))
+
