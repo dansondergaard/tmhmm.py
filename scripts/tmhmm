@@ -7,13 +7,17 @@ import os.path
 import sys
 import textwrap
 
+from collections import defaultdict
+
 import skbio.io
 
 import tmhmm
 
 from tmhmm.model import parse
-from tmhmm.hmm import viterbi, forward
+from tmhmm.hmm import viterbi, forward, backward
 
+
+GROUP_NAMES = ('i', 'm', 'o')
 
 PRETTY_NAMES = {
     'i': 'inside',
@@ -51,7 +55,6 @@ args = parser.parse_args()
 header, model = parse(args.model_file)
 for record in skbio.io.read(args.sequence_file, format='fasta'):
     _, path = viterbi(record.sequence, *model)
-    forward_table, constants = forward(record.sequence, *model)
 
     out_base = os.path.basename(args.sequence_file.name)
     with open(out_base + '.summary', 'w') as summary_file:
@@ -63,3 +66,29 @@ for record in skbio.io.read(args.sequence_file, format='fasta'):
         print('>', record.id, ' ', record.description, sep='', file=ann_file)
         for line in textwrap.wrap(path, 79):
             print(line, file=ann_file)
+
+    forward_table, constants = forward(record.sequence, *model)
+    backward_table = backward(record.sequence, constants, *model)
+
+    posterior = forward_table * backward_table
+    _, _, _, char_map, label_map, name_map = model
+
+    observations = len(record.sequence)
+    states = len(name_map)
+
+    group_counts = defaultdict(int)
+    for group in label_map.values():
+        group_counts[group.lower()] += 1
+
+    with open(out_base + '.plot', 'w') as plot_file:
+        print('inside', 'membrane', 'outside', file=plot_file)
+        for i in range(observations):
+            group_probs = defaultdict(float)
+            for j in range(states):
+                group = label_map[j].lower()
+                group_probs[group] += posterior[i, j]
+
+            group_total = sum(group_probs.values())
+            for group in GROUP_NAMES:
+                print(group_probs[group]/group_total, end=' ', file=plot_file)
+            print(file=plot_file)
