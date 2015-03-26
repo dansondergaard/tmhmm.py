@@ -56,3 +56,4 @@ target/
 *.annotation
 *.summary
 *.plot
+*.pdf

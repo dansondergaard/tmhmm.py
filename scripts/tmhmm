@@ -9,7 +9,7 @@ import textwrap
 
 from collections import defaultdict
 
-import skbio.io
+import skbio as sk
 
 import tmhmm
 
@@ -53,7 +53,7 @@ parser.add_argument('-m', '--model', dest='model_file',
 args = parser.parse_args()
 
 header, model = parse(args.model_file)
-for record in skbio.io.read(args.sequence_file, format='fasta'):
+for record in sk.io.read(args.sequence_file, format='fasta'):
     _, path = viterbi(record.sequence, *model)
 
     out_base = os.path.basename(args.sequence_file.name)
