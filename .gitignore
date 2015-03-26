@@ -55,3 +55,4 @@ target/
 
 *.annotation
 *.summary
+*.plot
