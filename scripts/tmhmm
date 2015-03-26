@@ -10,6 +10,8 @@ import textwrap
 from collections import defaultdict
 
 import skbio as sk
+import pandas as pd
+import matplotlib.pyplot as plt
 
 import tmhmm
 
@@ -41,6 +43,21 @@ def summarize(path):
         yield start, end, state
 
 
+def plot(datafile, outputfile):
+    data = pd.read_csv(datafile, sep=' ', index_col=False)
+
+    plt.figure(figsize=(16, 8))
+    plt.title('Posterior probabilities')
+    plt.suptitle('tmhmm.py')
+    plt.plot(data.inside, label='inside', color='blue')
+    plt.plot(data.membrane, label='transmembrane', color='red')
+    plt.fill_between(range(len(data)), data.membrane, color='red')
+    plt.plot(data.outside, label='outside', color='black')
+    plt.legend(frameon=False, bbox_to_anchor=[0.5, 0],
+               loc='upper center', ncol=3, borderaxespad=1.5)
+    plt.tight_layout(pad=3)
+    plt.savefig(outputfile)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', dest='sequence_file',
@@ -49,6 +66,8 @@ parser.add_argument('-f', '--file', dest='sequence_file',
 parser.add_argument('-m', '--model', dest='model_file',
                     type=argparse.FileType('r'), default=DEFAULT_MODEL,
                     help='path to the model to use')
+parser.add_argument('-p', '--plot', dest='plot_posterior', action='store_true',
+                    help='plot posterior probabilies')
 
 args = parser.parse_args()
 
@@ -80,7 +99,8 @@ for record in sk.io.read(args.sequence_file, format='fasta'):
     for group in label_map.values():
         group_counts[group.lower()] += 1
 
-    with open(out_base + '.plot', 'w') as plot_file:
+    plot_filename = out_base + '.plot'
+    with open(plot_filename, 'w') as plot_file:
         print('inside', 'membrane', 'outside', file=plot_file)
         for i in range(observations):
             group_probs = defaultdict(float)
@@ -92,3 +112,6 @@ for record in sk.io.read(args.sequence_file, format='fasta'):
             for group in GROUP_NAMES:
                 print(group_probs[group]/group_total, end=' ', file=plot_file)
             print(file=plot_file)
+
+    if args.plot_posterior:
+        plot(plot_filename, out_base + '.pdf')
