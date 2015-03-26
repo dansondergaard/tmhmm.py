@@ -11,7 +11,7 @@ import skbio.io
 import tmhmm
 
 from tmhmm.model import parse
-from tmhmm.hmm import viterbi
+from tmhmm.hmm import viterbi, forward
 
 
 PRETTY_NAMES = {
@@ -50,6 +50,8 @@ args = parser.parse_args()
 header, model = parse(args.model_file)
 for record in skbio.io.read(args.sequence_file, format='fasta'):
     _, path = viterbi(record.sequence, *model)
+    forward_table, constants = forward(record.sequence, *model)
+
     for start, end, state in summarize(path):
         print("{} {} {}".format(start, end, PRETTY_NAMES[state]))
     print()
