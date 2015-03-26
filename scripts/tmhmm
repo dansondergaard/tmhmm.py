@@ -5,6 +5,7 @@ import itertools
 import os
 import os.path
 import sys
+import textwrap
 
 import skbio.io
 
@@ -52,8 +53,13 @@ for record in skbio.io.read(args.sequence_file, format='fasta'):
     _, path = viterbi(record.sequence, *model)
     forward_table, constants = forward(record.sequence, *model)
 
-    for start, end, state in summarize(path):
-        print("{} {} {}".format(start, end, PRETTY_NAMES[state]))
-    print()
-    print('>', record.id, ' ', record.description, sep='')
-    print(path)
+    out_base = os.path.basename(args.sequence_file.name)
+    with open(out_base + '.summary', 'w') as summary_file:
+        for start, end, state in summarize(path):
+            print("{} {} {}".format(start, end, PRETTY_NAMES[state]),
+                  file=summary_file)
+
+    with open(out_base + '.annotation', 'w') as ann_file:
+        print('>', record.id, ' ', record.description, sep='', file=ann_file)
+        for line in textwrap.wrap(path, 79):
+            print(line, file=ann_file)
