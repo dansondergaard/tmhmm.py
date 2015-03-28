@@ -105,5 +105,5 @@ the same naming scheme as the other output files.
 
 * scikit-bio
 * numpy
-* pandas
-* matplotlib
+* pandas (for plotting only)
+* matplotlib (for plotting only)

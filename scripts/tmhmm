@@ -10,8 +10,6 @@ import textwrap
 from collections import defaultdict
 
 import skbio as sk
-import pandas as pd
-import matplotlib.pyplot as plt
 
 import tmhmm
 
@@ -44,19 +42,26 @@ def summarize(path):
 
 
 def plot(datafile, outputfile):
-    data = pd.read_csv(datafile, sep=' ', index_col=False)
+    try:
+        import pandas as pd
+        import matplotlib.pyplot as plt
+    except ImportError:
+        print('Error: Packages pandas and matplotlib are required', end='')
+        print('for plotting, but could not be found. Exiting.')
+    else:
+        data = pd.read_csv(datafile, sep=' ', index_col=False)
 
-    plt.figure(figsize=(16, 8))
-    plt.title('Posterior probabilities')
-    plt.suptitle('tmhmm.py')
-    plt.plot(data.inside, label='inside', color='blue')
-    plt.plot(data.membrane, label='transmembrane', color='red')
-    plt.fill_between(range(len(data)), data.membrane, color='red')
-    plt.plot(data.outside, label='outside', color='black')
-    plt.legend(frameon=False, bbox_to_anchor=[0.5, 0],
-               loc='upper center', ncol=3, borderaxespad=1.5)
-    plt.tight_layout(pad=3)
-    plt.savefig(outputfile)
+        plt.figure(figsize=(16, 8))
+        plt.title('Posterior probabilities')
+        plt.suptitle('tmhmm.py')
+        plt.plot(data.inside, label='inside', color='blue')
+        plt.plot(data.membrane, label='transmembrane', color='red')
+        plt.fill_between(range(len(data)), data.membrane, color='red')
+        plt.plot(data.outside, label='outside', color='black')
+        plt.legend(frameon=False, bbox_to_anchor=[0.5, 0],
+                   loc='upper center', ncol=3, borderaxespad=1.5)
+        plt.tight_layout(pad=3)
+        plt.savefig(outputfile)
 
 
 parser = argparse.ArgumentParser()
