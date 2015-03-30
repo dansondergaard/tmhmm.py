@@ -101,6 +101,20 @@ plotting.
 If the `-p` flag is set a plot in PDF format will also be produced, following
 the same naming scheme as the other output files.
 
+# API
+
+You can also use tmhmm.py as a library:
+
+    import tmhmm
+    annotation, posterior = tmhmm.predict(sequence, 'mymodel.model')
+
+This returns the annotation as a string and the posterior probabilities for
+each label as a numpy array with shape `(len(sequence), 3)` where column 0, 1
+and 2 corresponds to being inside, transmembrane and outside, respectively.
+
+If you don't need the posterior probabilities set `compute_posterior=False`,
+this will save quite a lot of computation.
+
 # Dependencies
 
 * scikit-bio

@@ -14,10 +14,12 @@ import skbio as sk
 import tmhmm
 
 from tmhmm.model import parse
-from tmhmm.hmm import viterbi, forward, backward
+from tmhmm import predict
 
 
-GROUP_NAMES = ('i', 'm', 'o')
+APP_DIR = os.path.dirname(tmhmm.__path__[0])
+DEFAULT_MODEL = os.path.join(APP_DIR, 'TMHMM2.0.model')
+
 
 PRETTY_NAMES = {
     'i': 'inside',
@@ -25,9 +27,6 @@ PRETTY_NAMES = {
     'o': 'outside',
     'O': 'outside'
 }
-
-APP_DIR = os.path.dirname(tmhmm.__path__[0])
-DEFAULT_MODEL = os.path.join(APP_DIR, 'TMHMM2.0.model')
 
 
 def summarize(path):
@@ -64,6 +63,7 @@ def plot(datafile, outputfile):
         plt.savefig(outputfile)
 
 
+
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--file', dest='sequence_file',
                     type=argparse.FileType('r'), required=True,
@@ -78,7 +78,7 @@ args = parser.parse_args()
 
 header, model = parse(args.model_file)
 for record in sk.io.read(args.sequence_file, format='fasta'):
-    _, path = viterbi(record.sequence, *model)
+    path, posterior = predict(record.sequence, model)
 
     with open(record.id + '.summary', 'w') as summary_file:
         for start, end, state in summarize(path):
@@ -90,32 +90,13 @@ for record in sk.io.read(args.sequence_file, format='fasta'):
         for line in textwrap.wrap(path, 79):
             print(line, file=ann_file)
 
-    forward_table, constants = forward(record.sequence, *model)
-    backward_table = backward(record.sequence, constants, *model)
-
-    posterior = forward_table * backward_table
-    _, _, _, char_map, label_map, name_map = model
-
-    observations = len(record.sequence)
-    states = len(name_map)
-
-    group_counts = defaultdict(int)
-    for group in label_map.values():
-        group_counts[group.lower()] += 1
-
     plot_filename = record.id + '.plot'
     with open(plot_filename, 'w') as plot_file:
         print('inside', 'membrane', 'outside', file=plot_file)
-        for i in range(observations):
-            group_probs = defaultdict(float)
-            for j in range(states):
-                group = label_map[j].lower()
-                group_probs[group] += posterior[i, j]
-
-            group_total = sum(group_probs.values())
-            for group in GROUP_NAMES:
-                print(group_probs[group]/group_total, end=' ', file=plot_file)
-            print(file=plot_file)
+        for i in range(len(record.sequence)):
+            print('{} {} {}'.format(posterior[i, 0],
+                                    posterior[i, 1],
+                                    posterior[i, 2]), file=plot_file)
 
     if args.plot_posterior:
         plot(plot_filename, record.id + '.pdf')
