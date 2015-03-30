@@ -24,6 +24,8 @@ def viterbi(sequence,
              optimal path.
     """
 
+    sequence = sequence.upper()
+
     cdef int no_observations = len(sequence)
     cdef int no_states = len(initial)
 
@@ -88,6 +90,8 @@ def forward(sequence,
              normalize it.
     """
 
+    sequence = sequence.upper()
+
     cdef int no_observations = len(sequence)
     cdef int no_states = len(initial)
 
@@ -137,6 +141,8 @@ def backward(sequence,
     :rtype: np.ndarray
     :return: the scaled backward table.
     """
+
+    sequence = sequence.upper()
 
     cdef int no_observations = len(sequence)
     cdef int no_states = len(initial)
