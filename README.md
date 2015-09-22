@@ -1,3 +1,5 @@
+IMPORTANT: This repository has been moved to [BitBucket](https://bitbucket.org/dansondergaard/tmhmm.py) and development will continue there in the future. This repository will NOT be updated.
+
 # Introduction
 
 This repository houses a Python 3 implementation of transmembrane helix hidden Markov model ([TMHMM](http://www.cbs.dtu.dk/services/TMHMM/)) originally described in:
