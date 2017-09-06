@@ -78,25 +78,25 @@ args = parser.parse_args()
 
 header, model = parse(args.model_file)
 for record in sk.io.read(args.sequence_file, format='fasta'):
-    path, posterior = predict(record.sequence, model)
+    path, posterior = predict(str(record), model)
 
-    with open(record.id + '.summary', 'w') as summary_file:
+    with open(record.metadata['id'] + '.summary', 'w') as summary_file:
         for start, end, state in summarize(path):
             print("{} {} {}".format(start, end, PRETTY_NAMES[state]),
                   file=summary_file)
 
-    with open(record.id + '.annotation', 'w') as ann_file:
-        print('>', record.id, ' ', record.description, sep='', file=ann_file)
+    with open(record.metadata['id'] + '.annotation', 'w') as ann_file:
+        print('>', record.metadata['id'], ' ', record.metadata['description'], sep='', file=ann_file)
         for line in textwrap.wrap(path, 79):
             print(line, file=ann_file)
 
-    plot_filename = record.id + '.plot'
+    plot_filename = record.metadata['id'] + '.plot'
     with open(plot_filename, 'w') as plot_file:
         print('inside', 'membrane', 'outside', file=plot_file)
-        for i in range(len(record.sequence)):
+        for i in range(len(str(record))):
             print('{} {} {}'.format(posterior[i, 0],
                                     posterior[i, 1],
                                     posterior[i, 2]), file=plot_file)
 
     if args.plot_posterior:
-        plot(plot_filename, record.id + '.pdf')
+        plot(plot_filename, record.metadata['id'] + '.pdf')
