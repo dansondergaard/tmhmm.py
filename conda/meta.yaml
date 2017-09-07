@@ -1,0 +1,40 @@
+{% set version = 1.1 %}
+{% set repo_url = 'https://github.com/dansondergaard/tmhmm.py' %}
+
+package:
+  name: tmhmm.py
+  version: {{ version }}
+
+source:
+  path: ../
+
+build:
+  number: 0
+  script: python setup.py install --single-version-externally-managed --record=record.txt
+
+requirements:
+  build:
+    - python >=3.4
+    - setuptools
+    - numpy >=1.13
+    - cython
+    - gcc
+  run:
+    - python >=3.4
+    - numpy >=1.13
+    - matplotlib >=2.0
+    - scikit-bio >=0.5
+
+test:
+  source_files:
+    - TMHMM2.0.model
+    - test.fa
+  imports:
+    - tmhmm
+    - tmhmm.hmm
+  commands:
+    - tmhmm -m TMHMM2.0.model -f test.fa
+
+about:
+  home: {{ repo_url }}
+  license: MIT

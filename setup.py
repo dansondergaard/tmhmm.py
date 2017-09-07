@@ -1,33 +1,21 @@
-from setuptools import setup, find_packages
-from distutils.extension import Extension
+from setuptools import setup
+from Cython.Build import cythonize
 
 import numpy
 
-
-USE_CYTHON = True
-try:
-    from Cython.Build import cythonize
-except Exception:
-    USE_CYTHON = False
-
-ext = '.pyx' if USE_CYTHON else '.c'
-
-extensions = [Extension("tmhmm.hmm", ["tmhmm/hmm" + ext])]
-
-if USE_CYTHON:
-    extensions = cythonize(extensions)
-
 setup(
     name='tmhmm.py',
-    version='1.0',
+    version='1.1',
     author='Dan Søndergaard',
     author_email='das@birc.au.dk',
     description='A transmembrane helix finder.',
     url='https://github.com/dansondergaard/tmhmm.py/',
-    install_requires=['scikit-bio>=0.4.2', 'numpy>=1.9'],
-    packages=find_packages(),
-    scripts=['scripts/tmhmm'],
-    ext_modules=extensions,
+    entry_points={
+        'console_scripts': ['tmhmm=tmhmm.cli:cli'],
+    },
+    install_requires=['numpy>=1.13', 'scikit-bio>=0.5'],
+    packages=['tmhmm'],
+    ext_modules=cythonize('tmhmm/hmm.pyx', include_path=[numpy.get_include()]),
     include_dirs=[numpy.get_include()],
     data_files=[('', ['TMHMM2.0.model'])]
 )
