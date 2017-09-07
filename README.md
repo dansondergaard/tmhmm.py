@@ -20,10 +20,9 @@ used to describe the model and a pretty fast Cython implementation of the Viterb
 
 # Installation
 
-The package is not available at PyPI yet, but installation is pretty trivial:
+There's conda packages available for Linux and OS X (both 64-bit):
 
-    git clone https://github.com/dansondergaard/tmhmm.py.git
-    python setup.py install
+    conda install -c dansondergaard tmhmm.py
 
 # Usage
 
@@ -114,10 +113,3 @@ and 2 corresponds to being inside, transmembrane and outside, respectively.
 
 If you don't need the posterior probabilities set `compute_posterior=False`,
 this will save quite a lot of computation.
-
-# Dependencies
-
-* scikit-bio
-* numpy
-* pandas (for plotting only)
-* matplotlib (for plotting only)

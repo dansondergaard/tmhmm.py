@@ -13,7 +13,7 @@ setup(
     entry_points={
         'console_scripts': ['tmhmm=tmhmm.cli:cli'],
     },
-    install_requires=['numpy>=1.13', 'scikit-bio>=0.5'],
+    install_requires=['numpy>=1.9', 'scikit-bio>=0.5'],
     packages=['tmhmm'],
     ext_modules=cythonize('tmhmm/hmm.pyx', include_path=[numpy.get_include()]),
     include_dirs=[numpy.get_include()],

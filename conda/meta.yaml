@@ -14,14 +14,14 @@ build:
 
 requirements:
   build:
-    - python >=3.4
+    - python {{ python }}
     - setuptools
-    - numpy >=1.13
+    - numpy >=1.9
     - cython
     - gcc
   run:
-    - python >=3.4
-    - numpy >=1.13
+    - python {{ python }}
+    - numpy >=1.9
     - matplotlib >=2.0
     - scikit-bio >=0.5
 
