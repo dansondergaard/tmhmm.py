@@ -3,12 +3,14 @@ import itertools
 import os.path
 import textwrap
 
+import matplotlib
+matplotlib.use('Agg')
 import skbio as sk
 
 import tmhmm
 
 from tmhmm.model import parse
-from tmhmm import predict
+from tmhmm import predict, normalize_sequence
 
 
 APP_DIR = os.path.dirname(tmhmm.__path__[0])
@@ -72,7 +74,7 @@ def cli():
 
     header, model = parse(args.model_file)
     for record in sk.io.read(args.sequence_file, format='fasta'):
-        path, posterior = predict(str(record), model)
+        path, posterior = predict(normalized_sequence, header, model)
 
         with open(record.metadata['id'] + '.summary', 'w') as summary_file:
             for start, end, state in summarize(path):
@@ -87,7 +89,7 @@ def cli():
         plot_filename = record.metadata['id'] + '.plot'
         with open(plot_filename, 'w') as plot_file:
             print('inside', 'membrane', 'outside', file=plot_file)
-            for i in range(len(str(record))):
+            for i in range(len(normalized_sequence)):
                 print('{} {} {}'.format(posterior[i, 0],
                                         posterior[i, 1],
                                         posterior[i, 2]), file=plot_file)

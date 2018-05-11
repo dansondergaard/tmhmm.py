@@ -78,7 +78,8 @@ def _parse_header(tokens):
 
 
 def _normalize_states(states):
-    """
+    """Normalize states by inheriting parameters explicitly.
+
     The TMHMM file format allows parameters to be tied to the parameters of
     some other state. This basically means that a state inherits the parameters
     from another state.

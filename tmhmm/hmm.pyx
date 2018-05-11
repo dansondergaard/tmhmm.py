@@ -153,7 +153,7 @@ def backward(sequence,
     cdef unsigned int i, j, k, observation
     cdef double prob, state_sum
 
-    M[no_observations-1] = 1.0 / constants[no_observations - 1]
+    M[no_observations - 1] = 1.0 / constants[no_observations - 1]
 
     for i in range(no_observations-2, -1, -1):
         observation = char_map[sequence[i]]
