@@ -2,6 +2,7 @@ import argparse
 import itertools
 import os.path
 import textwrap
+import multiprocessing as mp
 
 import skbio as sk
 
@@ -56,6 +57,30 @@ def plot(datafile, outputfile):
         plt.tight_layout(pad=3)
         plt.savefig(outputfile)
 
+def process_record(record):
+    path, posterior = predict(str(record), model)
+
+    with open(record.metadata['id'] + '.summary', 'w') as summary_file:
+        for start, end, state in summarize(path):
+            print("{} {} {}".format(start, end, PRETTY_NAMES[state]),
+                  file=summary_file)
+
+    with open(record.metadata['id'] + '.annotation', 'w') as ann_file:
+        print('>', record.metadata['id'], ' ', record.metadata['description'], sep='', file=ann_file)
+        for line in textwrap.wrap(path, 79):
+            print(line, file=ann_file)
+
+    plot_filename = record.metadata['id'] + '.plot'
+    with open(plot_filename, 'w') as plot_file:
+        print('inside', 'membrane', 'outside', file=plot_file)
+        for i in range(len(str(record))):
+            print('{} {} {}'.format(posterior[i, 0],
+                                    posterior[i, 1],
+                                    posterior[i, 2]), file=plot_file)
+
+    if args.plot_posterior:
+        plot(plot_filename, record.metadata['id'] + '.pdf')
+
 
 def cli():
     parser = argparse.ArgumentParser()
@@ -68,29 +93,16 @@ def cli():
     parser.add_argument('-p', '--plot', dest='plot_posterior', action='store_true',
                         help='plot posterior probabilies')
 
+    global args, header, model
     args = parser.parse_args()
-
+    print("parsing %s\n" % args.model_file)
     header, model = parse(args.model_file)
-    for record in sk.io.read(args.sequence_file, format='fasta'):
-        path, posterior = predict(str(record), model)
 
-        with open(record.metadata['id'] + '.summary', 'w') as summary_file:
-            for start, end, state in summarize(path):
-                print("{} {} {}".format(start, end, PRETTY_NAMES[state]),
-                      file=summary_file)
 
-        with open(record.metadata['id'] + '.annotation', 'w') as ann_file:
-            print('>', record.metadata['id'], ' ', record.metadata['description'], sep='', file=ann_file)
-            for line in textwrap.wrap(path, 79):
-                print(line, file=ann_file)
+    records = list(sk.io.read(args.sequence_file, format='fasta'))
 
-        plot_filename = record.metadata['id'] + '.plot'
-        with open(plot_filename, 'w') as plot_file:
-            print('inside', 'membrane', 'outside', file=plot_file)
-            for i in range(len(str(record))):
-                print('{} {} {}'.format(posterior[i, 0],
-                                        posterior[i, 1],
-                                        posterior[i, 2]), file=plot_file)
-
-        if args.plot_posterior:
-            plot(plot_filename, record.metadata['id'] + '.pdf')
+    # process records in parallel
+    p = mp.Pool(processes = mp.cpu_count())
+    p.map(process_record, records)
+    p.close()
+    p.join()
