@@ -1,4 +1,4 @@
-from collections import Counter, defaultdict
+from collections import defaultdict
 
 import numpy as np
 
@@ -29,9 +29,6 @@ def predict(sequence, header, model_or_filelike, compute_posterior=True):
         observations = len(sequence)
         states = len(name_map)
 
-        # just counts how many states there are per label
-        group_counts = Counter(label_map.values())
-
         table = np.zeros(shape=(observations, 3))
         for i in range(observations):
             group_probs = defaultdict(float)
@@ -43,4 +40,3 @@ def predict(sequence, header, model_or_filelike, compute_posterior=True):
                 table[i, k] = group_probs[group]
         return path, table/table.sum(axis=1, keepdims=True)
     return path
-
