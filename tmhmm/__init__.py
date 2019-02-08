@@ -11,13 +11,6 @@ __all__  = ['predict']
 
 GROUP_NAMES = ('i', 'm', 'o')
 
-NON_AMINOACID_CHARS = {
-    'B': 'D',
-    'X': 'A',
-    'Z': 'E',
-    '-': '',
-}
-
 
 def predict(sequence, header, model_or_filelike, compute_posterior=True):
     if isinstance(model_or_filelike, tuple):
@@ -51,15 +44,3 @@ def predict(sequence, header, model_or_filelike, compute_posterior=True):
         return path, table/table.sum(axis=1, keepdims=True)
     return path
 
-
-def normalize_sequence(sequence, alphabet):
-    """Normalize a sequence.
-    
-    This removes gaps and replaces ambiguous amino acid characters with hard-
-    coded amino acids. Unknown characters are replaced with X.
-    """
-    return ''.join(
-        NON_AMINOACID_CHARS.get(c, 'X')
-        if c not in alphabet else c 
-        for c in sequence
-    )
