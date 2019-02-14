@@ -1,5 +1,4 @@
-from setuptools import setup
-from Cython.Build import cythonize
+from setuptools import setup, Extension
 
 import numpy
 
@@ -10,12 +9,26 @@ setup(
     author_email='das@birc.au.dk',
     description='A transmembrane helix finder.',
     url='https://github.com/dansondergaard/tmhmm.py/',
+    packages=['tmhmm'],
+    zip_safe=False,
+
+    setup_requires=['setuptools>=18.0', 'numpy>=1.9', 'cython'],
+    install_requires=['numpy>=1.9', 'scikit-bio>=0.5'],
+    extras_require={
+        'plotting':  ["matplotlib"],
+    },
+
     entry_points={
         'console_scripts': ['tmhmm=tmhmm.cli:cli'],
     },
-    install_requires=['numpy>=1.9', 'scikit-bio>=0.5'],
-    packages=['tmhmm'],
-    ext_modules=cythonize('tmhmm/hmm.pyx', include_path=[numpy.get_include()]),
-    include_dirs=[numpy.get_include()],
-    data_files=[('', ['TMHMM2.0.model'])]
+
+    ext_modules=[
+        Extension(
+            'tmhmm.hmm',
+            sources=['tmhmm/hmm.pyx'],
+            include_dirs=[numpy.get_include()],
+        ),
+    ],
+
+    data_files=[('', ['TMHMM2.0.model'])],
 )
