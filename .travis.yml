@@ -14,4 +14,7 @@ deploy:
   password:
     secure: pkbpjsT030GRHjRvyaQIJVo3sq5YmUI03LlU1HLTFOvPq6qixsxBiWpfCybnhjfVvdRoYdUadcBhelCMkiwucDm2CwPI12wVH7toVZb1AhbNnq+QSILjTlSA+ry7y89XnRTodC9u9SfgA6LvKWs106lcUbZegZCCS6o3j9O7KTI=
   distributions: "sdist bdist_wheel"
+  skip_cleanup: true
+  on:
+    tags: true
 
