@@ -14,7 +14,7 @@ from tmhmm import predict
 
 
 APP_DIR = os.path.dirname(tmhmm.__path__[0])
-DEFAULT_MODEL = os.path.join(APP_DIR, 'TMHMM2.0.model')
+DEFAULT_MODEL = os.path.join(APP_DIR, 'tmhmm', 'TMHMM2.0.model')
 
 
 PRETTY_NAMES = {

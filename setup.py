@@ -10,6 +10,7 @@ setup(
     description='A transmembrane helix finder.',
     url='https://github.com/dansondergaard/tmhmm.py/',
     packages=['tmhmm'],
+    package_data={'tmhmm': ['TMHMM2.0.model']},
     zip_safe=False,
 
     setup_requires=['setuptools>=18.0', 'numpy>=1.9', 'cython'],
@@ -29,6 +30,4 @@ setup(
             include_dirs=[numpy.get_include()],
         ),
     ],
-
-    data_files=[('', ['TMHMM2.0.model'])],
 )
