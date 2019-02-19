@@ -1,4 +1,4 @@
-{% set version = 1.1 %}
+{% set version = 1.2 %}
 {% set repo_url = 'https://github.com/dansondergaard/tmhmm.py' %}
 
 package:
@@ -14,26 +14,24 @@ build:
 
 requirements:
   build:
+    - {{ compiler('c') }}
+  host:
     - python {{ python }}
     - setuptools
-    - numpy >=1.9
+    - numpy {{ numpy }}
     - cython
-    - gcc
   run:
-    - python {{ python }}
-    - numpy >=1.9
-    - matplotlib >=2.0
-    - scikit-bio >=0.5
+    - python
+    - {{ pin_compatible('numpy') }}
 
 test:
   source_files:
-    - TMHMM2.0.model
     - test.fa
   imports:
     - tmhmm
     - tmhmm.hmm
   commands:
-    - tmhmm -m TMHMM2.0.model -f test.fa
+    - tmhmm -f test.fa
 
 about:
   home: {{ repo_url }}
