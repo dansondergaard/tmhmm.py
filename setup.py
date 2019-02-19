@@ -14,9 +14,9 @@ setup(
     zip_safe=False,
 
     setup_requires=['setuptools>=18.0', 'numpy>=1.9', 'cython'],
-    install_requires=['numpy>=1.9', 'scikit-bio>=0.5'],
+    install_requires=['numpy>=1.9'],
     extras_require={
-        'plotting':  ['matplotlib', 'pandas'],
+        'plotting':  ['matplotlib'],
     },
 
     entry_points={
