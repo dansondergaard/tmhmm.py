@@ -4,7 +4,7 @@ import numpy
 
 setup(
     name='tmhmm.py',
-    version='1.2.1',
+    version='1.2.2',
     author='Dan Søndergaard',
     author_email='das@birc.au.dk',
     description='A transmembrane helix finder.',
