@@ -1,8 +1,14 @@
 # Introduction
 
-This repository houses a Python 3 implementation of transmembrane helix hidden Markov model ([TMHMM](http://www.cbs.dtu.dk/services/TMHMM/)) originally described in:
+This repository houses a Python 3 implementation of transmembrane helix hidden
+Markov model ([TMHMM](http://www.cbs.dtu.dk/services/TMHMM/)) originally
+described in:
 
-E\. L.L. Sonnhammer, G. von Heijne, and A. Krogh. **A hidden Markov model for predicting transmembrane helices in protein sequences**. In J. Glasgow, T. Littlejohn, F. Major, R. Lathrop, D. Sankoff, and C. Sensen, editors, Proceedings of the Sixth International Conference on Intelligent Systems for Molecular Biology, pages 175-182, Menlo Park, CA, 1998. AAAI Press.
+E\. L.L. Sonnhammer, G. von Heijne, and A. Krogh. **A hidden Markov model for
+predicting transmembrane helices in protein sequences**. In J. Glasgow,
+T. Littlejohn, F. Major, R. Lathrop, D. Sankoff, and C. Sensen, editors,
+Proceedings of the Sixth International Conference on Intelligent Systems for
+Molecular Biology, pages 175-182, Menlo Park, CA, 1998. AAAI Press.
 
 # Why?
 
@@ -16,7 +22,16 @@ I did this for a few reasons:
   out the web service.
 
 This Python implementation includes a parser for the undocumented file format
-used to describe the model and a pretty fast Cython implementation of the Viterbi algorithm used to perform the annotation.
+used to describe the model and a pretty fast Cython implementation of the
+Viterbi algorithm used to perform the annotation. The tool will output files
+similar to the files produced by the original TMHMM implementation.
+
+# Incompatibilities
+
+* The original TMHMM implementation handles ambigious characters and gaps in an
+  undocumented way. However, tmhmm.py does not attempt to handle such
+  characters at all and will fail. A possible fix is to replace those
+  characters with something also based on expert/domain knowledge.
 
 # Installation
 
@@ -36,6 +51,9 @@ There's conda packages available for Linux and OS X (both 64-bit):
         -m MODEL_FILE, --model MODEL_FILE
                               path to the model to use
         -p, --plot            plot posterior probabilies
+
+The `-p`/`--plot` option will only be available if `matplotlib` is installed
+and importable.
 
 Say we have the following sequence in FASTA format in a file called `test.fa`:
 
