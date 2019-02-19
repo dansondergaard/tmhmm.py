@@ -4,10 +4,11 @@ import numpy
 
 setup(
     name='tmhmm.py',
-    version='1.2',
+    version='1.2.1',
     author='Dan Søndergaard',
     author_email='das@birc.au.dk',
     description='A transmembrane helix finder.',
+    long_description=open('README.md').read(),
     url='https://github.com/dansondergaard/tmhmm.py/',
     packages=['tmhmm'],
     package_data={'tmhmm': ['TMHMM2.0.model']},
