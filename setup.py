@@ -14,6 +14,8 @@ setup(
     package_data={'tmhmm': ['TMHMM2.0.model']},
     zip_safe=False,
 
+    python_version='>=3.4',
+
     setup_requires=['setuptools>=18.0', 'numpy>=1.9', 'cython'],
     install_requires=['numpy>=1.9'],
     extras_require={
