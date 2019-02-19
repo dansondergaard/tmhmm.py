@@ -1,7 +1,7 @@
 # Introduction
 
-This repository houses a Python 3 implementation of transmembrane helix hidden
-Markov model ([TMHMM](http://www.cbs.dtu.dk/services/TMHMM/)) originally
+This repository houses a Python 3.4+ implementation of transmembrane helix 
+hidden Markov model ([TMHMM](http://www.cbs.dtu.dk/services/TMHMM/)) originally
 described in:
 
 E\. L.L. Sonnhammer, G. von Heijne, and A. Krogh. **A hidden Markov model for
