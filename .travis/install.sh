@@ -6,15 +6,13 @@ if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
     brew install pyenv pyenv-virtualenv
 
     pyenv install ${PYTHON_VERSION}
-    pyenv virtualenv ${PYTHON_VERSION} venv
 
     export PYENV_VERSION=${PYTHON_VERSION}
     export PATH="/Users/travis/.pyenv/shims:${PATH}"
-    pyenv-virtualenv venv
-    source venv/bin/activate
+    pyenv virtualenv venv
 fi
 
-pip install --upgrade pip
+pip install --upgrade pip setuptools
 
 python --version
 pip --version

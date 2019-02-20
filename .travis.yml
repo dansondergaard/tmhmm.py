@@ -14,7 +14,7 @@ matrix:
 install:
   - ./.travis/install.sh
 script:
-  - tmhmm -f test.fa
+  - pyenv activate venv && tmhmm -f test.fa
 deploy:
   provider: pypi
   user: dansondergaard
