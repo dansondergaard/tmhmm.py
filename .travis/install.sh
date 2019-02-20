@@ -1,23 +1,23 @@
 #!/bin/bash
 
 if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
+    brew update
+    brew install openssl readline
     brew install pyenv pyenv-virtualenv
-    pyenv local 3.4.0 3.5.0 3.6.0
-    case "${PYTHON_VERSION}" in
-        py34)
-            pyenv install 3.4.0
-            pyenv local 3.4.0
-            ;;
-        py35)
-            pyenv install 3.5.0
-            pyenv local 3.5.0
-            ;;
-        py36)
-            pyenv install 3.6.0
-            pyenv local 3.6.0
-            ;;
-    esac
+
+    pyenv install ${PYTHON_VERSION}
+    pyenv virtualenv ${PYTHON_VERSION} venv
+
+    export PYENV_VERSION=${PYTHON_VERSION}
+    export PATH="/Users/travis/.pyenv/shims:${PATH}"
+    pyenv-virtualenv venv
+    source venv/bin/activate
 fi
 
 pip install --upgrade pip
+
+python --version
+pip --version
+
+pip install -r requirements-build.txt
 pip install .

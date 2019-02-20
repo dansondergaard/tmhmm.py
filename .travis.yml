@@ -9,13 +9,13 @@ matrix:
       python: 3.6
     - os: osx
       language: generic
-      env: PYTHON_VERSION=py34
+      env: PYTHON_VERSION=3.4.0
     - os: osx
       language: generic
-      env: PYTHON_VERSION=py35
+      env: PYTHON_VERSION=3.5.0
     - os: osx
       language: generic
-      env: PYTHON_VERSION=py36
+      env: PYTHON_VERSION=3.6.0
 install:
   - ./.travis/install.sh
 script:
