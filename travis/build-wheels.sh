@@ -15,4 +15,5 @@ done
 # Install packages
 for PYBIN in /opt/python/*/bin/; do
     "${PYBIN}/pip" install tmhmm.py --no-index -f /io/wheelhouse
+    (cp /io/test.fa $HOME/; cd $HOME; tmhmm -f test.fa -p)
 done
