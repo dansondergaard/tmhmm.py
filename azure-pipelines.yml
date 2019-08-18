@@ -24,13 +24,12 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
-    cd tmhmm.py
     python setup.py sdist bdist_wheel
   displayName: 'Run tests'
 
 - task: CopyFiles@2
   inputs:
-    contents: tmhmm.py/dist/**
+    contents: dist/**
     targetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: PublishBuildArtifacts@1
