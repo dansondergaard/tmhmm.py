@@ -22,3 +22,18 @@ steps:
     python -m pip install --upgrade pip
     pip install -r requirements-build.txt
   displayName: 'Install dependencies'
+
+  - script: |
+      cd tmhmm.py
+      python setup.py sdist bdist_wheel
+    displayName: 'Run tests'
+
+  - task: CopyFiles@2
+    inputs:
+      contents: tmhmm.py/dist/**
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
+
