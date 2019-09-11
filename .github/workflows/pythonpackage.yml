@@ -24,6 +24,5 @@ jobs:
         pip install -r requirements-build.txt
         python setup.py build sdist bdist_wheel
         ls -l build/
-    - name: 
     - name: Run on test file
       run: tmhmm -f test.fa
