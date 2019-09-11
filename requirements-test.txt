@@ -4,7 +4,6 @@ CacheControl==0.12.5
 certifi==2018.11.29
 chardet==3.0.4
 cycler==0.10.0
-Cython==0.29.5
 decorator==4.3.2
 hdmedians==0.13
 idna==2.8
