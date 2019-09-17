@@ -16,7 +16,7 @@ jobs:
           python-version: 3.5
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip wheel
+          python -m pip install --upgrade pip wheel twine
           pip install -r requirements-build.txt
 
       - name: Build sdist and wheel
@@ -46,7 +46,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip wheel
+          python -m pip install --upgrade pip wheel twine
           pip install -r requirements-build.txt
 
       - name: Build wheel
