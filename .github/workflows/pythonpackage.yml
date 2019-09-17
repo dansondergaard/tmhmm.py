@@ -6,9 +6,7 @@ on:
       - "v*.*.*-*"
 
 jobs:
-  build-sdist:
-    needs:
-      - lint
+  deploy-sdist:
     runs-on: ubuntu-16.03
     steps:
       - uses: actions/checkout@v1
@@ -32,9 +30,7 @@ jobs:
         with:
           files: dist/*
 
-  build-wheels:
-    needs:
-      - lint
+  deploy-wheel-${{ matrix.os }}-${{ matrix.python-version }}:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
