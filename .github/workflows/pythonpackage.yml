@@ -24,12 +24,12 @@ jobs:
           python setup.py build sdist
           ls -l dist/
 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
+      - name: Publish wheel
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: dist/*
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
+        run: |
+          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
   deploy-wheel:
     runs-on: ${{ matrix.os }}
@@ -49,14 +49,14 @@ jobs:
           python -m pip install --upgrade pip wheel
           pip install -r requirements-build.txt
 
-      - name: Build sdist and wheel
+      - name: Build wheel
         run: |
           python setup.py build bdist_wheel
           ls -l dist/
 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
+      - name: Publish wheel
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          files: dist/*
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
+        run: |
+          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
