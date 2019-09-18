@@ -26,7 +26,7 @@ jobs:
 
       - name: Publish wheel
         env:
-          TWINE_USERNAME: __token__
+          TWINE_USERNAME: dansondergaard
           TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
         run: |
           twine upload --repository-url https://test.pypi.org/legacy/ dist/*
@@ -56,7 +56,7 @@ jobs:
 
       - name: Publish wheel
         env:
-          TWINE_USERNAME: __token__
-          TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
+          TWINE_USERNAME: dansondergaard
+          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
         run: |
           twine upload --repository-url https://test.pypi.org/legacy/ dist/*
