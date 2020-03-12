@@ -1,6 +1,6 @@
 # Introduction
 
-This repository houses a Python 3.4+ implementation of transmembrane helix
+This repository houses a Python 3.5+ implementation of transmembrane helix
 hidden Markov model ([TMHMM](http://www.cbs.dtu.dk/services/TMHMM/)) originally
 described in:
 
@@ -39,6 +39,8 @@ similar to the files produced by the original TMHMM implementation.
 This package supports Python 3.5, 3.6, and 3.7. Install with:
 
     $ pip install tmhmm.py
+
+Only Linux is supported at the moment.
 
 # Usage
 
