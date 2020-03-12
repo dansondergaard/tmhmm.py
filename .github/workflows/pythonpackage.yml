@@ -12,7 +12,7 @@ jobs:
     strategy:
       matrix:
         python-version: [3.5, 3.6, 3.7]
-        os: [ubuntu-16.04, macOS-latest]
+        os: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v1
@@ -30,10 +30,12 @@ jobs:
           python -m pip install --upgrade setuptools pip wheel twine
           python -m pip install -r requirements-build.txt
 
-      - name: Build wheel
-        run: |
-          python setup.py sdist bdist_wheel
-          ls -l dist/
+      - name: Build manylinux Python wheels
+        uses: RalfG/python-wheels-manylinux-build@v0.2.2-manylinux2010_x86_64
+        with:
+          python-versions: "cp35-cp35m cp36-cp36m cp37-cp37m cp38-cp38m"
+          build-requirements: "cython numpy"
+          pip-wheel-args: "--no-deps"
 
       - name: "Check long_description"
         run: "python -m twine check dist/*"
@@ -43,9 +45,11 @@ jobs:
         with:
           password: ${{ secrets.test_pypi_password }}
           repository_url: https://test.pypi.org/legacy/
+          packages_dir: wheelhouse/
 
       - name: Publish distribution package to PyPI
         if: startsWith(github.event.ref, 'refs/tags')
         uses: pypa/gh-action-pypi-publish@master
         with:
           password: ${{ secrets.pypi_password }}
+          packages_dir: wheelhouse/

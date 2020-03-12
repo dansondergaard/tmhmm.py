@@ -1,6 +1,6 @@
 # Introduction
 
-This repository houses a Python 3.4+ implementation of transmembrane helix 
+This repository houses a Python 3.4+ implementation of transmembrane helix
 hidden Markov model ([TMHMM](http://www.cbs.dtu.dk/services/TMHMM/)) originally
 described in:
 
@@ -36,9 +36,9 @@ similar to the files produced by the original TMHMM implementation.
 
 # Installation
 
-There's conda packages available for Linux and OS X (both 64-bit):
+This package supports Python 3.5, 3.6, and 3.7. Install with:
 
-    conda install -c dansondergaard tmhmm.py
+    $ pip install tmhmm.py
 
 # Usage
 
@@ -131,4 +131,8 @@ each label as a numpy array with shape `(len(sequence), 3)` where column 0, 1
 and 2 corresponds to being inside, transmembrane and outside, respectively.
 
 If you don't need the posterior probabilities set `compute_posterior=False`,
-this will save quite a lot of computation.
+this will save quite a lot of computation:
+
+    annotation, posterior = tmhmm.predict(
+        sequence, 'mymodel.model', compute_posterior=False
+    )
