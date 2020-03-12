@@ -1,35 +1,39 @@
 name: Build Python package and publish
 
+# on:
+#   push:
+#     tags:
+#       - "v*.*.*-*"
+
 on:
   push:
-    tags:
-      - "v*.*.*-*"
+    branches: ["master"]
 
 jobs:
-  deploy-sdist:
-    runs-on: ubuntu-16.03
-    steps:
-      - uses: actions/checkout@v1
-      - name: Set up Python 3.5
-        uses: actions/setup-python@v1
-        with:
-          python-version: 3.5
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip wheel twine
-          pip install -r requirements-build.txt
+  # deploy-sdist:
+  #   runs-on: ubuntu-16.03
+  #   steps:
+  #     - uses: actions/checkout@v1
+  #     - name: Set up Python 3.5
+  #       uses: actions/setup-python@v1
+  #       with:
+  #         python-version: 3.7
+  #     - name: Install dependencies
+  #       run: |
+  #         python -m pip install --upgrade pip wheel twine
+  #         pip install -r requirements-build.txt
 
-      - name: Build sdist and wheel
-        run: |
-          python setup.py build sdist
-          ls -l dist/
+  #     - name: Build sdist and wheel
+  #       run: |
+  #         python setup.py build sdist
+  #         ls -l dist/
 
-      - name: Publish wheel
-        env:
-          TWINE_USERNAME: dansondergaard
-          TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
-        run: |
-          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+  #     - name: Publish wheel
+  #       env:
+  #         TWINE_USERNAME: dansondergaard
+  #         TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
+  #       run: |
+  #         twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
   deploy-wheel:
     runs-on: ${{ matrix.os }}
@@ -40,23 +44,28 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v1
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip wheel twine
-          pip install -r requirements-build.txt
+          python -m pip install --upgrade pip wheel twine pep517
+          python -m pip install -r requirements-build.txt
 
       - name: Build wheel
         run: |
-          python setup.py build bdist_wheel
+          python -m pep517.build --source --binary .
           ls -l dist/
 
-      - name: Publish wheel
-        env:
-          TWINE_USERNAME: dansondergaard
-          TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-        run: |
-          twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+      - name: "Check long_description"
+        run: "python -m twine check dist/*"
+
+      # - name: Publish wheel
+      #   env:
+      #     TWINE_USERNAME: dansondergaard
+      #     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+      #   run: |
+      #     twine upload --repository-url https://test.pypi.org/legacy/ dist/*
