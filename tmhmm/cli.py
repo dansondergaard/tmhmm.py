@@ -3,6 +3,14 @@ import itertools
 import os.path
 import textwrap
 
+from .api import predict
+from .model import parse
+from .utils import (
+    dump_posterior_file,
+    load_posterior_file,
+    load_fasta_file,
+)
+
 has_matplotlib = True
 try:
     import matplotlib
@@ -11,15 +19,8 @@ try:
 except ImportError:
     has_matplotlib = False
 
-import tmhmm
 
-from tmhmm.api import predict
-from tmhmm.model import parse
-from tmhmm.utils import dump_posterior_file, load_posterior_file, load_fasta_file
-
-
-
-APP_DIR = os.path.dirname(tmhmm.__path__[0])
+APP_DIR = os.path.dirname(__file__.__path__[0])
 DEFAULT_MODEL = os.path.join(APP_DIR, 'tmhmm', 'TMHMM2.0.model')
 
 
@@ -53,7 +54,7 @@ def plot(posterior_file, outputfile):
     plt.fill_between(range(len(inside)), membrane, color='red')
     plt.plot(outside, label='outside', color='black')
     plt.legend(frameon=False, bbox_to_anchor=[0.5, 0],
-                loc='upper center', ncol=3, borderaxespad=1.5)
+               loc='upper center', ncol=3, borderaxespad=1.5)
     plt.tight_layout(pad=3)
     plt.savefig(outputfile)
 
@@ -67,7 +68,8 @@ def cli():
                         type=argparse.FileType('r'), default=DEFAULT_MODEL,
                         help='path to the model to use')
     if has_matplotlib:
-        parser.add_argument('-p', '--plot', dest='plot_posterior', action='store_true',
+        parser.add_argument('-p', '--plot', dest='plot_posterior',
+                            action='store_true',
                             help='plot posterior probabilies')
 
     args = parser.parse_args()
