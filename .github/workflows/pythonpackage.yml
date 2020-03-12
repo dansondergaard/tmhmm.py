@@ -1,40 +1,12 @@
-name: Build Python package and publish
-
-# on:
-#   push:
-#     tags:
-#       - "v*.*.*-*"
+name: Build
 
 on:
   push:
     branches: ["master"]
+  pull_request:
+    branches: ["master"]
 
 jobs:
-  # deploy-sdist:
-  #   runs-on: ubuntu-16.03
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - name: Set up Python 3.5
-  #       uses: actions/setup-python@v1
-  #       with:
-  #         python-version: 3.7
-  #     - name: Install dependencies
-  #       run: |
-  #         python -m pip install --upgrade pip wheel twine
-  #         pip install -r requirements-build.txt
-
-  #     - name: Build sdist and wheel
-  #       run: |
-  #         python setup.py build sdist
-  #         ls -l dist/
-
-  #     - name: Publish wheel
-  #       env:
-  #         TWINE_USERNAME: dansondergaard
-  #         TWINE_PASSWORD: ${{ secrets.PYPI_TEST_TOKEN }}
-  #       run: |
-  #         twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-
   deploy-wheel:
     runs-on: ${{ matrix.os }}
     strategy:
@@ -52,6 +24,9 @@ jobs:
 
       - name: Install dependencies
         run: |
+          set -xe
+          python -VV
+          python -m site
           python -m pip install --upgrade setuptools pip wheel twine
           python -m pip install -r requirements-build.txt
 
@@ -63,9 +38,14 @@ jobs:
       - name: "Check long_description"
         run: "python -m twine check dist/*"
 
-      # - name: Publish wheel
-      #   env:
-      #     TWINE_USERNAME: dansondergaard
-      #     TWINE_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-      #   run: |
-      #     twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+      - name: Publish distribution package to Test PyPI
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.test_pypi_password }}
+          repository_url: https://test.pypi.org/legacy/
+
+      - name: Publish distribution package to PyPI
+        if: startsWith(github.event.ref, 'refs/tags')
+        uses: pypa/gh-action-pypi-publish@master
+        with:
+          password: ${{ secrets.pypi_password }}
