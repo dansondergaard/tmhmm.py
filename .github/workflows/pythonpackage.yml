@@ -57,7 +57,7 @@ jobs:
 
       - name: Build wheel
         run: |
-          pythom setup.py sdist bdist_wheel
+          python setup.py sdist bdist_wheel
           ls -l dist/
 
       - name: "Check long_description"
