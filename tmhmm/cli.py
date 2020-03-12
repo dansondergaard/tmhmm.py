@@ -20,8 +20,7 @@ except ImportError:
     has_matplotlib = False
 
 
-APP_DIR = os.path.dirname(__file__.__path__[0])
-DEFAULT_MODEL = os.path.join(APP_DIR, 'tmhmm', 'TMHMM2.0.model')
+DEFAULT_MODEL = os.path.join(os.path.dirname(__file__), 'TMHMM2.0.model')
 
 
 PRETTY_NAMES = {
