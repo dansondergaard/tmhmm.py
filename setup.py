@@ -9,12 +9,14 @@ setup(
     author_email='das@birc.au.dk',
     description='A transmembrane helix finder.',
     long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
+
     url='https://github.com/dansondergaard/tmhmm.py/',
     packages=['tmhmm'],
     package_data={'tmhmm': ['TMHMM2.0.model']},
     zip_safe=False,
 
-    python_version='>=3.4',
+    python_version='>=3.5',
 
     setup_requires=['setuptools>=18.0', 'numpy>=1.9', 'cython'],
     install_requires=['numpy>=1.9'],

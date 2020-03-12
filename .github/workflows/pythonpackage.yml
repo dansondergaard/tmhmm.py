@@ -52,7 +52,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip wheel twine
+          python -m pip install --upgrade setuptools pip wheel twine
           python -m pip install -r requirements-build.txt
 
       - name: Build wheel
