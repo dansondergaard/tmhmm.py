@@ -9,11 +9,11 @@ from tmhmm.hmm import viterbi, forward, backward
 GROUP_NAMES = ('i', 'm', 'o')
 
 
-def predict(sequence, header, model_or_filelike, compute_posterior=True):
+def predict(sequence, model_or_filelike='TMHMM2.0.model', compute_posterior=True):
     if isinstance(model_or_filelike, tuple):
         model = model_or_filelike
     else:
-        _, model = parse(open(model_or_filelike))
+        _, model = parse(model_or_filelike)
 
     _, path = viterbi(sequence, *model)
     if compute_posterior:

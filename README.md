@@ -126,7 +126,7 @@ the same naming scheme as the other output files.
 You can also use tmhmm.py as a library:
 
     import tmhmm
-    annotation, posterior = tmhmm.predict(sequence, 'mymodel.model')
+    annotation, posterior = tmhmm.predict(sequence_string)
 
 This returns the annotation as a string and the posterior probabilities for
 each label as a numpy array with shape `(len(sequence), 3)` where column 0, 1
@@ -136,5 +136,5 @@ If you don't need the posterior probabilities set `compute_posterior=False`,
 this will save quite a lot of computation:
 
     annotation, posterior = tmhmm.predict(
-        sequence, 'mymodel.model', compute_posterior=False
+        sequence_string, compute_posterior=False
     )
