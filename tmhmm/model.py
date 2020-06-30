@@ -1,5 +1,6 @@
 import collections
 import re
+import os
 
 import numpy as np
 
@@ -9,7 +10,13 @@ def _tokenize(contents):
 
 
 def _strip_comments(file_like):
-    return ''.join(filter(lambda l: not l.startswith('#'), file_like))
+    """
+    Assumes the model file is in the tmhmm/ directory
+    """
+    model = '/'.join([os.path.dirname(os.path.abspath(__file__)),file_like])
+    with open(model) as f:
+        lines = f.readlines()
+    return ''.join(filter(lambda l: not l.startswith('#'), lines))
 
 
 def _parse_list(tokens):
