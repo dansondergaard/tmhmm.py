@@ -10,11 +10,7 @@ def _tokenize(contents):
 
 
 def _strip_comments(file_like):
-    """
-    Assumes the model file is in the tmhmm/ directory
-    """
-    model = '/'.join([os.path.dirname(os.path.abspath(__file__)),file_like])
-    with open(model) as f:
+    with open(file_like, 'r') as f:
         lines = f.readlines()
     return ''.join(filter(lambda l: not l.startswith('#'), lines))
 

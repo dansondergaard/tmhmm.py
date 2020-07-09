@@ -1,9 +1,9 @@
 import argparse
 import itertools
-import os.path
 import textwrap
 
 from .api import predict
+from .api import DEFAULT_MODEL
 from .model import parse
 from .utils import (
     dump_posterior_file,
@@ -18,9 +18,6 @@ try:
     import matplotlib.pyplot as plt
 except ImportError:
     has_matplotlib = False
-
-
-DEFAULT_MODEL = os.path.join(os.path.dirname(__file__), 'TMHMM2.0.model')
 
 
 PRETTY_NAMES = {
@@ -64,7 +61,7 @@ def cli():
                         type=argparse.FileType('r'), required=True,
                         help='path to file in fasta format with sequences')
     parser.add_argument('-m', '--model', dest='model_file',
-                        type=argparse.FileType('r'), default=DEFAULT_MODEL,
+                        default=DEFAULT_MODEL,
                         help='path to the model to use')
     if has_matplotlib:
         parser.add_argument('-p', '--plot', dest='plot_posterior',
@@ -73,9 +70,8 @@ def cli():
 
     args = parser.parse_args()
 
-    header, model = parse(args.model_file)
     for entry in load_fasta_file(args.sequence_file):
-        path, posterior = predict(entry.sequence, header, model)
+        path, posterior = predict(entry.sequence, args.model_file)
 
         with open(entry.id + '.summary', 'w') as summary_file:
             for start, end, state in summarize(path):

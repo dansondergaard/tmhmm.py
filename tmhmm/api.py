@@ -1,6 +1,7 @@
 from collections import defaultdict
 
 import numpy as np
+import os.path
 
 from tmhmm.model import parse
 from tmhmm.hmm import viterbi, forward, backward
@@ -8,14 +9,16 @@ from tmhmm.hmm import viterbi, forward, backward
 
 GROUP_NAMES = ('i', 'm', 'o')
 
+DEFAULT_MODEL = os.path.join(os.path.dirname(__file__), 'TMHMM2.0.model')
 
-def predict(sequence, model_or_filelike='TMHMM2.0.model', compute_posterior=True):
+def predict(sequence, model_or_filelike=DEFAULT_MODEL, compute_posterior=True):
     if isinstance(model_or_filelike, tuple):
         model = model_or_filelike
     else:
-        _, model = parse(model_or_filelike)
+        header, model = parse(model_or_filelike)
 
     _, path = viterbi(sequence, *model)
+
     if compute_posterior:
         forward_table, constants = forward(sequence, *model)
         backward_table = backward(sequence, constants, *model)
